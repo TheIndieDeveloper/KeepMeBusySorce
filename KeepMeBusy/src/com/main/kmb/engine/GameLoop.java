@@ -37,7 +37,7 @@ import com.main.kmb.main.frame;
 
 public class GameLoop extends JPanel implements Runnable {
 
-	//TODO WELCOME!
+	//TODO WELCOME! TO THIS SORCE
 	
 	private Thread thread;
 	public static boolean running;
