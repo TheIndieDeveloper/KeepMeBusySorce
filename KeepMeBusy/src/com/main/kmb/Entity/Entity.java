@@ -9,9 +9,11 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 
 import com.main.kmb.Assets.assets;
 import com.main.kmb.engine.GameLoop;
+import com.main.kmb.game.Economy;
 import com.main.kmb.game.b_health;
 import com.main.kmb.gamestate.GameStateManager;
 import com.main.kmb.gamestates.Block;
@@ -76,6 +78,8 @@ public class Entity implements KeyListener {
 	private boolean isAlive = true;
 
 	private double regenScale = .01;
+	
+	Economy eco = new Economy();
 	
 	public Entity(){
 		
@@ -160,9 +164,11 @@ public class Entity implements KeyListener {
 		g.drawImage(assets.getHealthGUI(),10, 10*63+5, 32*6, 16*3,null);
 		g.drawImage(assets.getHealthGUI(),250, 10*63+5, 32*6, 16*3,null);
 		
-		g.drawString(GameLoop.parts.size()+"", 200, 200);
-		g.drawString(GameLoop.weather.size()+"", 200, 232);
-
+//		g.drawString(GameLoop.parts.size()+"", 200, 200);
+//		g.drawString(GameLoop.weather.size()+"", 200, 232);
+		
+		eco.FixEconomy(g);
+		
 		
 		g.drawRect(
 				(int)xpos - stopRectDistanceScuare*32  / 2 + getWidth() / 2, 
@@ -199,7 +205,7 @@ public class Entity implements KeyListener {
 			if(b.isSolid()){
 
 				if(isLeft()){
-	
+					
 				}
 //				//CHECKS
 //				for (int i = 0; i < speed * deltaTime; i++){
@@ -224,19 +230,27 @@ public class Entity implements KeyListener {
 		
 		if(canMove){
 			if(isLeft()){
-				PlayingState.xOffset -= speed * deltaTime;
+				if(PlayingState.xOffset > 1){
+					PlayingState.xOffset -= speed * deltaTime;
+				}
 			}
 			
 			if(isRight()) {
-				PlayingState.xOffset += speed * deltaTime;
+				if(PlayingState.xOffset < 5110){
+					PlayingState.xOffset += speed * deltaTime;
+				}
 			}
 			
 			if(isUp()){
-				PlayingState.yOffset -= speed * deltaTime;
+				if(PlayingState.yOffset > 20){	
+					PlayingState.yOffset -= speed * deltaTime;
+				}
 			}
 			
 			if(isDown()) {
-				PlayingState.yOffset += speed * deltaTime;
+				if(PlayingState.yOffset < 5700){	
+					PlayingState.yOffset += speed * deltaTime;
+				}
 			}
 			
 			
@@ -270,7 +284,7 @@ public class Entity implements KeyListener {
 		g.drawRect(EntityRect.x, EntityRect.y, EntityRect.width, EntityRect.height);
 		
 		g.setColor(Color.WHITE);
-		g.drawRect((int)xpos - detectionDistanceScuare*32 / 2 + getWidth() / 2,(int)ypos - detectionDistanceScuare*32 / 2 + getHeight() / 2, detectionDistanceScuare*32, detectionDistanceScuare*32);
+		//g.drawRect((int)xpos - detectionDistanceScuare*32 / 2 + getWidth() / 2,(int)ypos - detectionDistanceScuare*32 / 2 + getHeight() / 2, detectionDistanceScuare*32, detectionDistanceScuare*32);
 		g.setFont(new Font("Serif",20,20));
 		g.drawString("Kills: "+kills, 120, 25);
 //		g.drawRect(
@@ -449,6 +463,10 @@ public class Entity implements KeyListener {
 		return running;
 	}
 	
+	public Economy getEco() {
+		return eco;
+	}
+	
 	private void CheckDeath() {
 		if(getHealthScale() <= 0){
 			setAlive(false);
@@ -473,6 +491,8 @@ public class Entity implements KeyListener {
 			GameLoop.parts.add(new Particle((int)10 + (int)getHealthScale(),(int) 670, 5, (float) .5, Color.green, true));
 				
 			setDamaged(true);
+			DecimalFormat format = new DecimalFormat("0.#");
+			GameLoop.parts.add(new Particle((int)xpos, (int)ypos,25, 1, format.format(damage)+"-",Color.RED, true));
 			
 			attack.attacking = false;
 		}
@@ -647,6 +667,14 @@ public class Entity implements KeyListener {
 
 	public int getMaxStamina() {
 		return MaxStamina;
+	}
+	
+	public int getDefaultHealth() {
+		return defaultHealth;
+	}
+	
+	public int getDefaultStamina() {
+		return defaultStamina;
 	}
 
 	public void setMaxStamina(int maxStamina) {

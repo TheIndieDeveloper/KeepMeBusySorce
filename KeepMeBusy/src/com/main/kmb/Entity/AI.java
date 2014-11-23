@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -328,6 +329,8 @@ public class AI {
 				xpos = xpos -=knockback+speed*deltaTime;
 			}
 			damaged = true;
+			DecimalFormat format = new DecimalFormat("0.#");
+			GameLoop.parts.add(new Particle((int)cxpos, (int)cypos,25, 1, format.format(damage)+"-",Color.RED, true));
 		}
 	}
 	public double getXpos() {

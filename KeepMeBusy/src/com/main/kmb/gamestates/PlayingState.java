@@ -202,7 +202,7 @@ public class PlayingState extends GameState {
 			e.tick(deltaTime);
 			
 			if(player.getEntityBounds().intersects(e.getObjectRect())){
-				if(player.getHealthScale() < 250){
+				if(player.getHealthScale() < player.getDefaultHealth()){
 					player.addhealth(5);
 					e.isAlive = false;
 				}else{
@@ -291,6 +291,7 @@ public class PlayingState extends GameState {
 						if(player.isAttacking()){
 							aie.CreateAIGUI(g);
 							aie.TakeDamage(30, deltaTime);
+							player.getEco().addMoney(10);
 						}	
 					}
 					

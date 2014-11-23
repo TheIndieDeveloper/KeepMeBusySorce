@@ -26,6 +26,8 @@ public class assets {
 	public static BufferedImage p_attack_right;
 	public static BufferedImage p_attack_left;
 	
+	public static BufferedImage economy_icon;
+	
 	public static BufferedImage blood;
 	public static BufferedImage health_p;
 	
@@ -66,6 +68,8 @@ public class assets {
 		p_damage = SpriteSheet.getTile(48, 16*7, 16, 16);
 		korax_damage = SpriteSheet.getTile(32, 16*7, 16, 16);
 		
+		
+		
 		p_attack_up = SpriteSheet.getTile(64+32, 16*8, 16, 16);
 		p_attack_down = SpriteSheet.getTile(64+48, 16*8, 16, 16);
 		p_attack_left = SpriteSheet.getTile(64+16, 16*8, 16, 16);
@@ -73,6 +77,8 @@ public class assets {
 		
 		blood =  SpriteSheet.getTile(64+64+32, 32, 16, 16);
 		health_p = SpriteSheet.getTile(64+16, 16*7, 16, 16);
+		
+		economy_icon = SpriteSheet.getTile(64+32, 16*7, 16, 16);
 		
 		wall = SpriteSheet.getTile(16, 16, 16, 16);
 		stone_gt = SpriteSheet.getTile(32, 16, 16, 16);
@@ -96,6 +102,9 @@ public class assets {
 		
 	}
 	
+	public static BufferedImage getEconomy_icon() {
+		return economy_icon;
+	}
 	
 	public static BufferedImage getP_attack_up() {
 		return p_attack_up;
