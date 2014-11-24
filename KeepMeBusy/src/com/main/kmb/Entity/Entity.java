@@ -41,8 +41,8 @@ public class Entity implements KeyListener {
 	
 	private static boolean detected;
 	
-	private double runningSpeed = 7;
-	private double normalSpeed = 5;
+	private double runningSpeed = 6;
+	private double normalSpeed = 4;
 	public double speed;
 	
 	private int width = 30;
@@ -104,6 +104,8 @@ public class Entity implements KeyListener {
 		RegenHP(deltaTime);
 		CheckDeath();
 		
+		EntityMovement(deltaTime);
+		
 		render = new Rectangle(
 				(int)xpos - RenderDistanceScuare*68 / 2 + getWidth() / 2 + PlayingState.xOffset , 
 				(int)ypos - RenderDistanceScuare*37 / 2 + getHeight() / 2 - 16 + PlayingState.yOffset, 
@@ -127,8 +129,6 @@ public class Entity implements KeyListener {
 		TickDamageTime(deltaTime);
 		
 		CollisionDetection(deltaTime);
-		
-		EntityMovement(deltaTime);
 	
 		EntityRect = new Rectangle((int)xpos + PlayingState.xOffset , (int) ypos + PlayingState.yOffset, getWidth(), getHeight());
 			
@@ -201,25 +201,6 @@ public class Entity implements KeyListener {
 	
 	private void CollisionDetection(double deltaTime) {
 		
-		for(Block b : PlayingState.getBlocks()){
-			if(b.isSolid()){
-
-				if(isLeft()){
-					
-				}
-//				//CHECKS
-//				for (int i = 0; i < speed * deltaTime; i++){
-//					if(PlayingState.checkCollision(xpos - 1 + PlayingState.xOffset - 1, ypos + height + PlayingState.yOffset) 
-//							|| PlayingState.checkCollision(xpos -1 + PlayingState.xOffset - 1, ypos + PlayingState.yOffset)
-//							){
-//						left = false;
-//						PlayingState.xOffset+=1;
-//						break;
-//					}
-//				}
-				
-			}
-		}
 	}
 	
 	public boolean CollidingWithBlock() {
@@ -229,27 +210,75 @@ public class Entity implements KeyListener {
 	private void EntityMovement(double deltaTime) {
 		
 		if(canMove){
+			
+			double moveAmount = speed * deltaTime;
+			
 			if(isLeft()){
-				if(PlayingState.xOffset > 1){
-					PlayingState.xOffset -= speed * deltaTime;
+				
+				if(!Collision.PlayerBlock(
+						//LEFT DOWN
+						new Point( (int) (xpos + PlayingState.xOffset - moveAmount),
+								   (int) (ypos + PlayingState.yOffset + height)),
+						//LEFT UP
+						new Point( (int) (xpos + PlayingState.xOffset - moveAmount), 
+								   (int) (ypos + PlayingState.yOffset)))){
+					
+					if(PlayingState.xOffset > 1){
+						//MOVE MAP
+						PlayingState.xOffset -= moveAmount;
+					}
+					
 				}
+
 			}
 			
 			if(isRight()) {
-				if(PlayingState.xOffset < 5110){
-					PlayingState.xOffset += speed * deltaTime;
+				
+				if(!Collision.PlayerBlock(
+						// RIGHT DOWN
+						new Point( (int) (xpos + PlayingState.xOffset + width + moveAmount) ,
+								   (int) (ypos + PlayingState.yOffset)),
+						// RIGHT UP
+						new Point( (int) (xpos + PlayingState.xOffset + width + moveAmount), 
+								   (int) (ypos + PlayingState.yOffset + height)))){
+					
+					if(PlayingState.xOffset < 5110){
+						//MOVE MAP
+						PlayingState.xOffset += moveAmount;
+					}
 				}
 			}
 			
 			if(isUp()){
-				if(PlayingState.yOffset > 20){	
-					PlayingState.yOffset -= speed * deltaTime;
-				}
+				if(!Collision.PlayerBlock(
+						//UP LEFT
+						new Point( (int) (xpos + PlayingState.xOffset) ,
+								   (int) (ypos + PlayingState.yOffset - moveAmount)),
+						//UP RIGHT		
+						new Point( (int) (xpos + PlayingState.xOffset + width), 
+								   (int) (ypos + PlayingState.yOffset - moveAmount)))){
+//					
+					if(PlayingState.yOffset > 20){	
+						//MOVE MAP
+						PlayingState.yOffset -= moveAmount;
+					}
+				}	
 			}
-			
+//			
 			if(isDown()) {
-				if(PlayingState.yOffset < 5700){	
-					PlayingState.yOffset += speed * deltaTime;
+				if(!Collision.PlayerBlock(
+						//DOWN RIGHT
+						new Point( (int) (xpos + PlayingState.xOffset) ,
+								   (int) (ypos + PlayingState.yOffset + height + moveAmount)),
+						//DOWN LEFT
+						new Point( (int) (xpos + PlayingState.xOffset + width), 
+								   (int) (ypos + PlayingState.yOffset + height + moveAmount)))){
+//					
+//					
+					if(PlayingState.yOffset < 5700){
+						//MOVE MAP
+						PlayingState.yOffset += moveAmount;
+					}
 				}
 			}
 			

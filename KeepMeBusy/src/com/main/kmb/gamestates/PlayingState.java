@@ -291,7 +291,7 @@ public class PlayingState extends GameState {
 						if(player.isAttacking()){
 							aie.CreateAIGUI(g);
 							aie.TakeDamage(30, deltaTime);
-							player.getEco().addMoney(10);
+							player.getEco().addMoney(5);
 						}	
 					}
 					
