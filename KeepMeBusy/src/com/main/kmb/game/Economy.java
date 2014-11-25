@@ -41,7 +41,7 @@ public class Economy {
 	double height = 48;
 
 	public void FixEconomy(Graphics2D g) {
-		g.setFont(new Font("Back to 1982",30,25));
+		g.setFont(new Font("Calvin",30,40));
 		g.setColor(Color.YELLOW);
 		g.drawString(getMoney()+"", 360, 42);
 		g.setColor(Color.WHITE);

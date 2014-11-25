@@ -19,8 +19,8 @@ public class Korax extends AI {
 		xpos = x;
 		ypos = y;
 		isAlive = true;
-		int max = 3300;
-		int maxy = 1500;
+		int max = 2300;
+		int maxy = 2500;
 		Random ran = new Random();
 		int xx = ran.nextInt(max);
 		int yy = ran.nextInt(maxy);

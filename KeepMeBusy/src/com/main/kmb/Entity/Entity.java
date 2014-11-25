@@ -10,10 +10,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import com.main.kmb.Assets.assets;
 import com.main.kmb.engine.GameLoop;
 import com.main.kmb.game.Economy;
+import com.main.kmb.game.PlayerStats;
 import com.main.kmb.game.b_health;
 import com.main.kmb.gamestate.GameStateManager;
 import com.main.kmb.gamestates.Block;
@@ -60,26 +62,13 @@ public class Entity implements KeyListener {
 	private boolean animate = true;
 	private Rectangle render;
 	
-	//HEALTH
-	private int health = 184;
-	private int defaultHealth = health;
-	private int Maxhealth = 1;
-	private float healthScale = health / getMaxhealth();
-	
-	//ENEGRY / STAMINA
-	private int stamina = 184;
-	private int defaultStamina = stamina;
-	private int MaxStamina = 1;
-	private float StaminaScale = stamina / getMaxStamina();
-	
 	private static boolean damaged;
-	public static int kills = 0;
 	
 	private boolean isAlive = true;
 
 	private double regenScale = .01;
 	
-	Economy eco = new Economy();
+	public PlayerStats stats = new PlayerStats();
 	
 	public Entity(){
 		
@@ -93,12 +82,12 @@ public class Entity implements KeyListener {
 	
 	public void tick(double deltaTime) {
 
-		if(healthScale > defaultHealth){
-			healthScale = defaultHealth;
+		if(getStats().getCurrHealth() > getStats().getDefaultHealth()){
+			getStats().setCurrHealth(getStats().getDefaultHealth());
 		}
 		
-		if(StaminaScale > defaultStamina){
-			StaminaScale = defaultStamina;
+		if(getStats().getCurrStamina() > getStats().getDefaultStamina()){
+			getStats().setCurrStamina(getStats().getDefaultStamina());
 		}
 		
 		RegenHP(deltaTime);
@@ -135,30 +124,35 @@ public class Entity implements KeyListener {
 	}
 
 	private void RegenHP(double deltaTime) {
-		if(getHealthScale() < defaultHealth){
-			setHealthScale((float) (getHealthScale() + regenScale * deltaTime));
+		if(getStats().getCurrHealth() < getStats().getDefaultHealth()){
+			getStats().addHealth(getStats().getHealthRegen());
 		}
 	}
 
 	float blackScreen = 1;
-	
+	float healthScale;
+	float staminaScale; 
 	public void HandlePlayerHealth(GameStateManager gsm, Graphics2D g) {
 		
-		if(getHealthScale() > 100){
+		if(getStats().getCurrHealth() > 100){
 			g.setColor(Color.GREEN);
 		}
-		if(getHealthScale() < 100){
+		if(getStats().getCurrHealth() < 100){
 			g.setColor(Color.ORANGE);
 		}
-		if(getHealthScale() < 50){
+		if(getStats().getCurrHealth() < 50){
 			g.setColor(Color.RED);
 		}
 		
-//		g.fillRect((int) x - (int)healthScaleP / 2 + 16, (int)y - 16, (int) (1 * healthScaleP), 8);
-		g.fillRect(14, 638, (int) ((int) getMaxhealth() * getHealthScale()) , 42);
+		healthScale = (float) (getStats().getCurrHealth() / getStats().getMaxHealth());
+		staminaScale = (float) (getStats().getCurrStamina() / getStats().getMaxStamina());
+		
+		g.fillRect((int) 14, (int) 638, (int) (184 * healthScale), 42);
+		//g.fillRect(14, 638, (int) ((int) getMaxhealth() * getHealthScale()) , 42);
 		
 		g.setColor(Color.YELLOW);
-		g.fillRect(254, 638, (int) ((int) getMaxStamina() * getStaminaScale()) , 42);
+		//g.fillRect(254, 638, (int) ((int) getMaxStamina() * getStaminaScale()) , 42);
+		g.fillRect((int) 254, (int) 638, (int) (184 * staminaScale), 42);
 		g.setColor(Color.WHITE);
 
 		g.drawImage(assets.getHealthGUI(),10, 10*63+5, 32*6, 16*3,null);
@@ -167,7 +161,7 @@ public class Entity implements KeyListener {
 //		g.drawString(GameLoop.parts.size()+"", 200, 200);
 //		g.drawString(GameLoop.weather.size()+"", 200, 232);
 		
-		eco.FixEconomy(g);
+		stats.getEconomy().FixEconomy(g);
 		
 		
 		g.drawRect(
@@ -179,7 +173,7 @@ public class Entity implements KeyListener {
 		if(!isAlive())
 		{
 			if(blackScreen > 0.000000001){
-				blackScreen-= 0.05;
+				blackScreen-= 0.02;
 			}
 			
 			if(blackScreen <= 0.000000001){
@@ -222,11 +216,8 @@ public class Entity implements KeyListener {
 						//LEFT UP
 						new Point( (int) (xpos + PlayingState.xOffset - moveAmount), 
 								   (int) (ypos + PlayingState.yOffset)))){
-					
-					if(PlayingState.xOffset > 1){
 						//MOVE MAP
 						PlayingState.xOffset -= moveAmount;
-					}
 					
 				}
 
@@ -242,10 +233,8 @@ public class Entity implements KeyListener {
 						new Point( (int) (xpos + PlayingState.xOffset + width + moveAmount), 
 								   (int) (ypos + PlayingState.yOffset + height)))){
 					
-					if(PlayingState.xOffset < 5110){
-						//MOVE MAP
 						PlayingState.xOffset += moveAmount;
-					}
+					
 				}
 			}
 			
@@ -257,14 +246,12 @@ public class Entity implements KeyListener {
 						//UP RIGHT		
 						new Point( (int) (xpos + PlayingState.xOffset + width), 
 								   (int) (ypos + PlayingState.yOffset - moveAmount)))){
-//					
-					if(PlayingState.yOffset > 20){	
-						//MOVE MAP
+					
 						PlayingState.yOffset -= moveAmount;
-					}
+					
 				}	
 			}
-//			
+			
 			if(isDown()) {
 				if(!Collision.PlayerBlock(
 						//DOWN RIGHT
@@ -273,29 +260,25 @@ public class Entity implements KeyListener {
 						//DOWN LEFT
 						new Point( (int) (xpos + PlayingState.xOffset + width), 
 								   (int) (ypos + PlayingState.yOffset + height + moveAmount)))){
-//					
-//					
-					if(PlayingState.yOffset < 5700){
-						//MOVE MAP
 						PlayingState.yOffset += moveAmount;
-					}
+			
 				}
 			}
 			
 			
 
 			if(isRunning()){
-				if(getStamina() > 2){
+				if(getStats().getCurrStamina() > 2){
 					speed = runningSpeed;
 					setAnimationSpeed(50);
 				}
-				if(getStamina() < 2){
+				if(getStats().getCurrStamina() < 2){
 					speed = normalSpeed;
 					setAnimationSpeed(200);
 				}
-				LoseStamina(deltaTime);
+				getStats().removeStamina(2 * deltaTime);
 			}else{
-				addStamina(deltaTime);
+				getStats().addStamina(1 * deltaTime);
 				setAnimationSpeed(200);
 				speed = normalSpeed;
 			}
@@ -306,6 +289,7 @@ public class Entity implements KeyListener {
 	public int currAttackT = attackT;
 	
 	//TODO
+
 	
 	public void render(Graphics2D g){
 		g.drawRect((int) xpos, (int) ypos, getWidth(), getHeight());
@@ -315,7 +299,7 @@ public class Entity implements KeyListener {
 		g.setColor(Color.WHITE);
 		//g.drawRect((int)xpos - detectionDistanceScuare*32 / 2 + getWidth() / 2,(int)ypos - detectionDistanceScuare*32 / 2 + getHeight() / 2, detectionDistanceScuare*32, detectionDistanceScuare*32);
 		g.setFont(new Font("Serif",20,20));
-		g.drawString("Kills: "+kills, 120, 25);
+		g.drawString("Kills: "+getStats().getKills(), 120, 25);
 //		g.drawRect(
 //				(int)xpos - damageRectDistanceScuare*32 / 2 + getWidth() / 2,
 //				(int)ypos - damageRectDistanceScuare*32 / 2 + getHeight() / 2,
@@ -330,7 +314,7 @@ public class Entity implements KeyListener {
 //		//LEFT
 //		g.drawRect((int)xpos - width - 9, (int)ypos - 17, 48,64);
 		
-		g.drawImage(assets.getMinimap(), 1017, 530, 32*8,32*5,null);
+		//g.drawImage(assets.getMinimap(), 1017, 530, 32*8,32*5,null);
 		
 		if(attacking){
 			if(Player.AnimationState == 0){
@@ -381,7 +365,6 @@ public class Entity implements KeyListener {
 	}
 	
 	private void TickDamageTime(double deltaTime) {
-		
 	//if(attacking){
 		if(Player.AnimationState == 0){
 			damageRect = new Rectangle((int)xpos - 17 + PlayingState.xOffset, (int)ypos + height - 9 + PlayingState.yOffset, 64,48);
@@ -434,7 +417,7 @@ public class Entity implements KeyListener {
 			//SPELLS
 
 			if(e.getKeyCode() == KeyEvent.VK_E){
-
+				
 			}
 			if(e.getKeyCode() == KeyEvent.VK_R){
 
@@ -492,12 +475,8 @@ public class Entity implements KeyListener {
 		return running;
 	}
 	
-	public Economy getEco() {
-		return eco;
-	}
-	
 	private void CheckDeath() {
-		if(getHealthScale() <= 0){
+		if(getStats().getCurrHealth() <= 0){
 			setAlive(false);
 			right = false;
 			left = false;
@@ -512,12 +491,13 @@ public class Entity implements KeyListener {
 	int p_damageTime = 30;
 
 	public void TakeDamage(AI attack,double damage, double deltaTime){
-		if(getHealthScale() > 0){
-			setHealthScale((float) (getHealthScale() - damage * deltaTime));
-				
-			GameLoop.parts.add(new Particle((int)10 + (int)getHealthScale(),(int) 650, 5, (float) .5, Color.green, true));
-			GameLoop.parts.add(new Particle((int)10 + (int)getHealthScale(),(int) 660, 5, (float) .3, Color.red, true));
-			GameLoop.parts.add(new Particle((int)10 + (int)getHealthScale(),(int) 670, 5, (float) .5, Color.green, true));
+		
+		if(getStats().getCurrHealth() > 0){
+			
+			getStats().removeHealth(damage);
+			GameLoop.parts.add(new Particle((int)10 + (int) (184 * healthScale),(int) 650, 5, (float) .5, Color.green, true));
+			GameLoop.parts.add(new Particle((int)10 + (int) (184 * healthScale),(int) 660, 5, (float) .3, Color.red, true));
+			GameLoop.parts.add(new Particle((int)10 + (int) (184 * healthScale),(int) 670, 5, (float) .5, Color.green, true));
 				
 			setDamaged(true);
 			DecimalFormat format = new DecimalFormat("0.#");
@@ -529,20 +509,7 @@ public class Entity implements KeyListener {
 	
 	
 	//PLAYERPROPS///////////////////////////////////////////////////////////////////////////////
-	public void LoseStamina(double deltaTime) {
-		if(getStaminaScale() > 0){
-			setStaminaScale((float) (getStaminaScale() - 1.2 * deltaTime));
-		}
-		
-	}
-	public void addStamina(double deltaTime) {
-		if(getStaminaScale() < defaultStamina){
-			setStaminaScale((float) (getStaminaScale() + 1.2 * deltaTime));
-		}
-	}
-	public float getStamina() {
-		return getStaminaScale();
-	}
+
 	//PLAYER GETTERS AND SETTERS////////////////////////////////////////////////////////////////
 	////PLAYER RENDER BOX
 	public Rectangle getRenderBox() {
@@ -588,13 +555,6 @@ public class Entity implements KeyListener {
 	public void setSize(int w, int h){
 		this.setWidth(w);
 		this.setHeight(h);
-	}
-	
-	public void addhealth(int i) {
-		if(healthScale < healthScale + i && healthScale < 250){
-			healthScale += i;
-			assets.playSound("HEALTH.wav");
-		}
 	}
 	
 	//SET POS
@@ -677,45 +637,9 @@ public class Entity implements KeyListener {
 	public void setHeight(int height) {
 		this.height = height;
 	}
-
-	public float getHealthScale() {
-		return healthScale;
-	}
-
-	public void setHealthScale(float healthScale) {
-		this.healthScale = healthScale;
-	}
-
-	public int getMaxhealth() {
-		return Maxhealth;
-	}
-
-	public void setMaxhealth(int maxhealth) {
-		Maxhealth = maxhealth;
-	}
-
-	public int getMaxStamina() {
-		return MaxStamina;
-	}
 	
-	public int getDefaultHealth() {
-		return defaultHealth;
-	}
-	
-	public int getDefaultStamina() {
-		return defaultStamina;
-	}
-
-	public void setMaxStamina(int maxStamina) {
-		MaxStamina = maxStamina;
-	}
-
-	public float getStaminaScale() {
-		return StaminaScale;
-	}
-
-	public void setStaminaScale(float staminaScale) {
-		StaminaScale = staminaScale;
+	public PlayerStats getStats() {
+		return stats;
 	}
 }
 

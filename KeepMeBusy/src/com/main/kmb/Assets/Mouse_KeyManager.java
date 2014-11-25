@@ -75,9 +75,10 @@ public class Mouse_KeyManager implements MouseListener,MouseMotionListener,KeyLi
 			hasEnteredScreen = false;
 		}
 	}
-
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
+		
 		if(e.getButton() == MouseEvent.BUTTON1){
 			if(!isPressedButton1){
 				isPressedButton1 = true;
@@ -164,5 +165,5 @@ public class Mouse_KeyManager implements MouseListener,MouseMotionListener,KeyLi
 	public void keyTyped(KeyEvent e) {
 
 	}
-	
+
 }

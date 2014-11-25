@@ -134,7 +134,7 @@ public class AI {
 							PlayingState.bonce_o.add(new b_health((int)xpos,(int)ypos));
 						}	
 						PlayingState.ai_entitys.remove(this);
-						Player.addKill(1);
+						player.getStats().addKill(1);
 					}
 					
 				}
@@ -152,7 +152,7 @@ public class AI {
 	int aiWaitingTime = 80;
 	
 	int walkR = 9;
-	Random ran = new Random();
+	public Random ran = new Random();
 	Block choosed_block;
 	
 	private void WalkRandomInGrid(double deltaTime, Player player) {
@@ -173,9 +173,9 @@ public class AI {
 						/*
 						 * adds the blocks in the grid
 						 */
-						
-						choosedBlocks.add(b);
-						
+						if(!b.isSolid()){
+							choosedBlocks.add(b);
+						}
 						/*
 						 * AI has choosed the grid
 						 */
@@ -193,13 +193,14 @@ public class AI {
 			/*
 			 * Start Walking towards the choosed_block
 			 */
-			walk_to_choose = true;
 			/*
 			 * choosed_block is random block out off the arraylist choosedblocks
 			 */
 			
 			choosed_block = choosedBlocks.get(ran.nextInt(choosedBlocks.size()));
 			System.out.println("PICKING RANDOM BLOCK!");
+			
+			walk_to_choose = true;
 			
 			
 		}
@@ -258,6 +259,7 @@ public class AI {
 		double dx = pXpos - cxpos,dy = pYpos - cypos;
 		double distance = Math.sqrt(dx*dx + dy*dy);
 		double multi = speed * deltaTime / distance;
+		
 		volx = dx * multi;
 		voly = dy * multi;
 		

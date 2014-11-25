@@ -11,6 +11,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -181,7 +182,7 @@ public class Player extends Entity{
 				}
 			}
 			if(isRunning()){
-				if(getStamina() > 2){
+				if(getStats().getCurrStamina() > 2){
 					if(isRight() || isLeft() || isUp() || isDown()){
 						GameLoop.parts.add(new Particle((int)getXpos() + 8, (int)getYpos() + 32 , 0, 0, 10, .3f, Color.GRAY, 0, true));
 						GameLoop.parts.add(new Particle((int)getXpos() + 32 - 8, (int)getYpos() + 32 , 0, 0, 10, .3f, Color.GRAY, 0, true));
@@ -191,6 +192,8 @@ public class Player extends Entity{
 			fixDamaged(g);
 		}
 	//	FixMouseStuff(g);
+		//g.drawString("health: "+format.format(getStats().getCurrHealth())+"/"+format.format(getStats().getMaxHealth()), 200, 500);
+		//g.drawString("health: "+(int)getStats().getCurrHealth()+"/"+(int)getStats().getMaxHealth(), 200, 500);
 	}
 	
 	//TODO
@@ -235,10 +238,6 @@ public class Player extends Entity{
 			g.drawImage(assets.getMouseThree(),(int) GameLoop.game.getMouse_moveX() - 18,(int) GameLoop.game.getMouse_moveY() - 38, 32,32,null);
 		}
 
-	}
-
-	public static void addKill(int i) {
-		kills+=i;
 	}
 	
     //GameLoop.parts.add(new Particle(Player.mx, Player.my, 0, 0, 20, .5, Color.WHITE));

@@ -220,12 +220,12 @@ public class Particle {
     		}else{
     			
     			if(size==0){
-        			g.setFont(new Font("lato",30,50));
+        			g.setFont(new Font("Serif",30,50));
         			g.setColor(color);
         			g.drawString(text, x, y);
         			g.setFont(new Font("Terminator Two",32,15));
     			}else{
-        			g.setFont(new Font("lato",30,size));
+        			g.setFont(new Font("Serif",30,size));
         			g.setColor(color);
         			g.drawString(text, x, y);
         			g.setFont(new Font("Terminator Two",32,15));
