@@ -27,7 +27,7 @@ public class Economy {
 	
 	public void addMoney(int money){
 		this.money = this.money + money;
-		GameLoop.parts.add(new Particle(200, 50, 1, money+"+",Color.YELLOW, true));
+		GameLoop.parts.add(new Particle(1280 / 2 - 32 / 2, 720 / 2 - 32, 1, money+"+",Color.YELLOW, true));
 	}
 	
 	public void removeMoney(int money){
@@ -43,9 +43,9 @@ public class Economy {
 	public void FixEconomy(Graphics2D g) {
 		g.setFont(new Font("Calvin",30,40));
 		g.setColor(Color.YELLOW);
-		g.drawString(getMoney()+"", 360, 42);
+		g.drawString(getMoney()+"", 180, 35);
 		g.setColor(Color.WHITE);
-		g.drawImage(assets.getEconomy_icon(), (int) (300 + xpos), (int) (10 + ypos),(int) width, (int) height,null);
+		g.drawImage(assets.getEconomy_icon(), (int) (130 + xpos), (int) (0 + ypos),(int) width, (int) height,null);
 		g.setFont(new Font("Terminator Two",32,15));
 	}
 	

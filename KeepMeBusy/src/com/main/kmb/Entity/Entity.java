@@ -93,6 +93,8 @@ public class Entity implements KeyListener {
 		RegenHP(deltaTime);
 		CheckDeath();
 		
+		EntityRect = new Rectangle((int)xpos + PlayingState.xOffset , (int) ypos + PlayingState.yOffset, getWidth(), getHeight());
+		
 		EntityMovement(deltaTime);
 		
 		render = new Rectangle(
@@ -117,9 +119,7 @@ public class Entity implements KeyListener {
 		
 		TickDamageTime(deltaTime);
 		
-		CollisionDetection(deltaTime);
-	
-		EntityRect = new Rectangle((int)xpos + PlayingState.xOffset , (int) ypos + PlayingState.yOffset, getWidth(), getHeight());
+		getStats().tickExp(deltaTime);
 			
 	}
 
@@ -131,7 +131,11 @@ public class Entity implements KeyListener {
 
 	float blackScreen = 1;
 	float healthScale;
+	float expScale;
 	float staminaScale; 
+	
+	int col;
+	boolean next = false;
 	public void HandlePlayerHealth(GameStateManager gsm, Graphics2D g) {
 		
 		if(getStats().getCurrHealth() > 100){
@@ -146,23 +150,47 @@ public class Entity implements KeyListener {
 		
 		healthScale = (float) (getStats().getCurrHealth() / getStats().getMaxHealth());
 		staminaScale = (float) (getStats().getCurrStamina() / getStats().getMaxStamina());
+		expScale = (float) (getStats().getCurrExp() / getStats().getMaxExp());
 		
-		g.fillRect((int) 14, (int) 638, (int) (184 * healthScale), 42);
+		g.fillRect((int) 304, (int) 4, (int) (184 * healthScale), 42);
 		//g.fillRect(14, 638, (int) ((int) getMaxhealth() * getHealthScale()) , 42);
 		
 		g.setColor(Color.YELLOW);
 		//g.fillRect(254, 638, (int) ((int) getMaxStamina() * getStaminaScale()) , 42);
-		g.fillRect((int) 254, (int) 638, (int) (184 * staminaScale), 42);
-		g.setColor(Color.WHITE);
+		g.fillRect((int) 504, (int) 4, (int) (184 * staminaScale), 42);
 
-		g.drawImage(assets.getHealthGUI(),10, 10*63+5, 32*6, 16*3,null);
-		g.drawImage(assets.getHealthGUI(),250, 10*63+5, 32*6, 16*3,null);
+		g.drawImage(assets.getHealthGUI(),300, 1, 32*6, 16*3,null);
+		g.drawImage(assets.getHealthGUI(),500, 1, 32*6, 16*3,null);
 		
 //		g.drawString(GameLoop.parts.size()+"", 200, 200);
 //		g.drawString(GameLoop.weather.size()+"", 200, 232);
 		
 		stats.getEconomy().FixEconomy(g);
+		if(!next){
+			if(col != 150){
+				col+=5;
+			}
+			if(col == 150){
+				next = true;
+			}
+		}
+		if(next){
+			if(col != 0){
+				col-=5;
+			}
+			if(col == 0){
+				next = false;
+			}
+		}
 		
+		g.setColor(new Color(0,255,col));
+		g.fillRect((int) 20, (int) 656, (int) (1235 * expScale), 30);
+		
+		g.drawImage(assets.getRank_GUI(), 0, 0, 64*4,64*2,null);
+		
+		getStats().fixRank(g);
+		
+		g.setColor(Color.WHITE);
 		
 		g.drawRect(
 				(int)xpos - stopRectDistanceScuare*32  / 2 + getWidth() / 2, 
@@ -192,15 +220,7 @@ public class Entity implements KeyListener {
 	public void canMove(boolean b) {
 		canMove = b;
 	}
-	
-	private void CollisionDetection(double deltaTime) {
-		
-	}
-	
-	public boolean CollidingWithBlock() {
-		return animate;
-	}
-	
+
 	private void EntityMovement(double deltaTime) {
 		
 		if(canMove){
@@ -285,9 +305,6 @@ public class Entity implements KeyListener {
 		}
 	}
 	
-	public int attackT = 10;
-	public int currAttackT = attackT;
-	
 	//TODO
 
 	
@@ -299,7 +316,7 @@ public class Entity implements KeyListener {
 		g.setColor(Color.WHITE);
 		//g.drawRect((int)xpos - detectionDistanceScuare*32 / 2 + getWidth() / 2,(int)ypos - detectionDistanceScuare*32 / 2 + getHeight() / 2, detectionDistanceScuare*32, detectionDistanceScuare*32);
 		g.setFont(new Font("Serif",20,20));
-		g.drawString("Kills: "+getStats().getKills(), 120, 25);
+		//g.drawString("Kills: "+getStats().getKills(), 120, 25);
 //		g.drawRect(
 //				(int)xpos - damageRectDistanceScuare*32 / 2 + getWidth() / 2,
 //				(int)ypos - damageRectDistanceScuare*32 / 2 + getHeight() / 2,
@@ -318,52 +335,33 @@ public class Entity implements KeyListener {
 		
 		if(attacking){
 			if(Player.AnimationState == 0){
+				
 				g.drawImage(assets.getP_attack_down(), (int)xpos - 17, (int)ypos + height - 9, 64,64,null);
-				if(currAttackT != 0){
-					currAttackT-=1;
-				}
-				if(currAttackT == 0)
-				{
-					attacking = false;
-					currAttackT = attackT;
-				}
+				getStats().AttackTimer(this);
+				
 			}
 			if(Player.AnimationState == 1){
+				
 				g.drawImage(assets.getP_attack_up(), (int)xpos - 17 , (int)ypos - height - 24, 64,64,null);
-				if(currAttackT != 0){
-					currAttackT-=1;
-				}
-				if(currAttackT == 0)
-				{
-					attacking = false;
-					currAttackT = attackT;
-				}
+				getStats().AttackTimer(this);
+				
 			}
 			if(Player.AnimationState == 2){
+				
 				g.drawImage(assets.getP_attack_right(), (int)xpos + width - 9, (int)ypos - 17, 64,64,null);
-				if(currAttackT != 0){
-					currAttackT-=1;
-				}
-				if(currAttackT == 0)
-				{
-					attacking = false;
-					currAttackT = attackT;
-				}
+				getStats().AttackTimer(this);
+				
 			}
 			if(Player.AnimationState == 3){
+				
 				g.drawImage(assets.getP_attack_left(), (int)xpos - width - 25, (int)ypos - 17, 64,64,null);
-				if(currAttackT != 0){
-					currAttackT-=1;
-				}
-				if(currAttackT == 0)
-				{
-					attacking = false;
-					currAttackT = attackT;
-				}
+				getStats().AttackTimer(this);
+				
 			}
 		}
 	}
 	
+	//TODO
 	private void TickDamageTime(double deltaTime) {
 	//if(attacking){
 		if(Player.AnimationState == 0){
@@ -416,8 +414,8 @@ public class Entity implements KeyListener {
 			
 			//SPELLS
 
-			if(e.getKeyCode() == KeyEvent.VK_E){
-				
+			if(e.getKeyCode() == KeyEvent.VK_SPACE){
+	
 			}
 			if(e.getKeyCode() == KeyEvent.VK_R){
 
@@ -445,7 +443,6 @@ public class Entity implements KeyListener {
 			}
 			if(e.getKeyCode() == KeyEvent.VK_SPACE){
 				if(!attacking){
-					//assets.playSound("hurt.wav");
 					setAttacking(true);
 				}
 			}
@@ -495,9 +492,9 @@ public class Entity implements KeyListener {
 		if(getStats().getCurrHealth() > 0){
 			
 			getStats().removeHealth(damage);
-			GameLoop.parts.add(new Particle((int)10 + (int) (184 * healthScale),(int) 650, 5, (float) .5, Color.green, true));
-			GameLoop.parts.add(new Particle((int)10 + (int) (184 * healthScale),(int) 660, 5, (float) .3, Color.red, true));
-			GameLoop.parts.add(new Particle((int)10 + (int) (184 * healthScale),(int) 670, 5, (float) .5, Color.green, true));
+			GameLoop.parts.add(new Particle((int)303 + (int) (184 * healthScale),(int) 16, 5, (float) .5, Color.green, true));
+			GameLoop.parts.add(new Particle((int)303 + (int) (184 * healthScale),(int) 26, 5, (float) .3, Color.red, true));
+			GameLoop.parts.add(new Particle((int)303 + (int) (184 * healthScale),(int) 36, 5, (float) .5, Color.green, true));
 				
 			setDamaged(true);
 			DecimalFormat format = new DecimalFormat("0.#");

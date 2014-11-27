@@ -122,72 +122,26 @@ public class Korax extends AI {
 		
 		if(isAlive){
 			walkright.setSpeed(AnimationSpeed);
-			walkrightdown.setSpeed(AnimationSpeed);
 			walkdown.setSpeed(AnimationSpeed);
 			walkup.setSpeed(AnimationSpeed);
-			walkleftdown.setSpeed(AnimationSpeed);
 			walkleft.setSpeed(AnimationSpeed);
-		
-			/*RIGHT DOWN*/
-			if(isDown() && isRight()){
-				g.drawImage(walkrightdown.sprite, (int) xpos - 16 - PlayingState.xOffset,(int) ypos - 26 - PlayingState.yOffset, 64, 64, null);
-				walkrightdown.update(System.currentTimeMillis());
-			}
-			
-			/*LEFT DOWN*/
-			if(isDown() && isLeft()){
-				g.drawImage(walkleftdown.sprite, (int) xpos - 16 - PlayingState.xOffset,(int) ypos - 26 - PlayingState.yOffset , 64, 64, null);
-				walkleftdown.update(System.currentTimeMillis());
-			}
-			
-			if(isRight() && isLeft()){
-				g.drawImage(walkidle.sprite, (int) xpos - 16 - PlayingState.xOffset,(int) ypos - 26 - PlayingState.yOffset, 64, 64, null);
-				walkidle.update(System.currentTimeMillis());
-			}
-			
-			
-			if(isRight() && isLeft() && isUp()){
-				g.drawImage(walkidle.sprite, (int) xpos - 16 - PlayingState.xOffset,(int) ypos - 26 - PlayingState.yOffset, 64, 64, null);
-				walkidle.update(System.currentTimeMillis());
-				setUp(false);
-			}
-			
-			if(isRight() && isLeft() && isDown()){
-				g.drawImage(walkidle.sprite, (int) xpos - 16 - PlayingState.xOffset,(int) ypos - 26 - PlayingState.yOffset, 64, 64, null);
-				walkidle.update(System.currentTimeMillis());
-				setDown(false);
-			}
-			
-			if(isUp() && isDown()){
-				g.drawImage(walkidle.sprite, (int) xpos - 16 - PlayingState.xOffset ,(int) ypos - 26 - PlayingState.yOffset, 64, 64, null);
-				walkidle.update(System.currentTimeMillis());
-			}
-			
-			if(isRight() && isUp()){
+				
+			if(isRight()){
 				g.drawImage(walkright.sprite, (int) xpos - 16 - PlayingState.xOffset,(int) ypos - 26 - PlayingState.yOffset, 64, 64, null);
 				walkright.update(System.currentTimeMillis());
 			}
-			
-			if(isLeft() && isUp()){
+		
+			if(isLeft()){
 				g.drawImage(walkleft.sprite, (int) xpos - 16  - PlayingState.xOffset,(int) ypos - 26 - PlayingState.yOffset, 64, 64, null);
 				walkleft.update(System.currentTimeMillis());
 			}
-			
-			if(isRight() && !isDown() && !isLeft() && !isUp()){
-				g.drawImage(walkright.sprite, (int) xpos - 16  - PlayingState.xOffset,(int) ypos - 26 - PlayingState.yOffset, 64, 64, null);
-				walkright.update(System.currentTimeMillis());
-			}
-			
-			if(isLeft() && !isDown() && !isRight() && !isUp()){
-				g.drawImage(walkleft.sprite, (int) xpos - 16  - PlayingState.xOffset,(int) ypos - 26 - PlayingState.yOffset, 64, 64, null);
-				walkleft.update(System.currentTimeMillis());
-			}
-			
-			if(isUp() && !isRight() && !isLeft()){
+	
+			if(isUp()){
 				g.drawImage(walkup.sprite, (int) xpos - 16  - PlayingState.xOffset,(int) ypos - 26 - PlayingState.yOffset, 64, 64, null);
 				walkup.update(System.currentTimeMillis());
 			}
-			if(isDown() && !isRight() && !isLeft()){
+			
+			if(isDown()){
 				g.drawImage(walkdown.sprite, (int) xpos - 16 - PlayingState.xOffset ,(int) ypos - 26 - PlayingState.yOffset, 64, 64, null);
 				walkdown.update(System.currentTimeMillis());
 			}

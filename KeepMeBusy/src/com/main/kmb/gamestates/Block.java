@@ -80,6 +80,9 @@ public class Block extends Rectangle{
 			case BRICKS:
 				img = assets.getBricks_Texture();
 			break;
+			case WOOD_1:
+				img = assets.getWood_1();
+			break;
 		}
 	}
 	
@@ -94,7 +97,7 @@ public class Block extends Rectangle{
 		MOSSYSTONE_GROUND, 
 		WOOD_FLOOR,
 		GROUND_ROAD_STONE,
-		BRICKS
+		BRICKS, WOOD_1
 	}
 
 	public BlockType getBlockType() {

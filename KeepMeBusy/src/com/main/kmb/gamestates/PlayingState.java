@@ -22,6 +22,8 @@ import com.main.kmb.gamestates.Block.BlockType;
 import com.main.kmb.gfx.load;
 import com.main.kmb.nature.Flower;
 import com.main.kmb.nature.Flower.FlowerType;
+import com.main.kmb.nature.Grass;
+import com.main.kmb.nature.Grass.GrassType;
 import com.main.kmb.nature.NatureObject;
 import com.main.kmb.nature.Tree;
 import com.main.kmb.nature.Tree.TreeType;
@@ -87,8 +89,12 @@ public class PlayingState extends GameState {
 			nature_o.add(new Flower(200*x, 200, FlowerType.RED));
 	
 		}
+		for(int x = 0; x < 5000;x++){
+			nature_o.add(new Grass(200*x, 200, GrassType.G1));
+		}
+
 		
-		for(int x = 0; x < 10;x++){
+		for(int x = 0; x < 50;x++){
 			ai_entitys.add(new Korax(200*x, 200));
 		}	
 		
@@ -150,6 +156,10 @@ public class PlayingState extends GameState {
 					
 					case 0xA0A0A0:
 						blocks.add(new Block(x*BLOCKSIZE, y*BLOCKSIZE, BlockType.GROUND_ROAD_STONE,false));
+					break;
+					
+					case 0x664C30:
+						blocks.add(new Block(x*BLOCKSIZE, y*BLOCKSIZE, BlockType.WOOD_1,true));
 					break;
 					
 					case 0x999999:
@@ -290,8 +300,9 @@ public class PlayingState extends GameState {
 					if(Entity.getDamageRect().intersects(aie.getBounds())){
 						if(player.isAttacking()){
 							aie.CreateAIGUI(g);
-							aie.TakeDamage(30, deltaTime);
-							player.stats.getEconomy().addMoney(5);
+							aie.TakeDamage(player.getStats().getDamage(), deltaTime);
+							player.getStats().getEconomy().addMoney(2);
+							player.getStats().addExp(0.5);
 						}	
 					}
 					

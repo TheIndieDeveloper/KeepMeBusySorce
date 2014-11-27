@@ -51,6 +51,8 @@ public class assets {
 	public static BufferedImage out_off_focus_GUI;
 	public static BufferedImage minimap;
 	public static BufferedImage minimap_img;
+	public static BufferedImage rank_GUI;
+	public static BufferedImage exp_bar;
 	
 	/*Mouse Images*/
 	public static BufferedImage mouse1;
@@ -59,7 +61,19 @@ public class assets {
 	
 	static load bi = new load();
 	
+	
+	//GRASS
+	public static BufferedImage grass_1;
+	
+	//NEW TEXTURES
+	public static BufferedImage wood_1;
+	
 	public static void init() {
+		
+		grass_1 = SpriteSheet.getTile(64, 0, 16, 16);
+		
+		wood_1 = SpriteSheet.getTile(64+64+48, 32, 16, 16);
+		
 		//NATURE
 		tree_oak = SpriteSheet.getTile(64+64+64, 0, 16, 16);
 		white_flower = SpriteSheet.getTile(64+64+64+16, 0, 16, 16);
@@ -68,7 +82,8 @@ public class assets {
 		p_damage = SpriteSheet.getTile(48, 16*7, 16, 16);
 		korax_damage = SpriteSheet.getTile(32, 16*7, 16, 16);
 		
-		
+		rank_GUI = SpriteSheet.getTile(64+64, 16*8, 64, 32);
+		exp_bar = SpriteSheet.getTile(64+64+64+16, 16, 16*6, 16);
 		
 		p_attack_up = SpriteSheet.getTile(64+32, 16*8, 16, 16);
 		p_attack_down = SpriteSheet.getTile(64+48, 16*8, 16, 16);
@@ -100,6 +115,22 @@ public class assets {
 		mouse2 = SpriteSheet.getTile(16, 0, 16, 16);
 		mouse3 = SpriteSheet.getTile(32, 0, 16, 16);
 		
+	}
+	
+	public static BufferedImage getGrass_1() {
+		return grass_1;
+	}
+	
+	public static BufferedImage getExp_bar() {
+		return exp_bar;
+	}
+	
+	public static BufferedImage getRank_GUI() {
+		return rank_GUI;
+	}
+	
+	public static BufferedImage getWood_1() {
+		return wood_1;
 	}
 	
 	public static BufferedImage getEconomy_icon() {

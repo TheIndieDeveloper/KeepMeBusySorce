@@ -12,6 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.main.kmb.Entity.Player;
 import com.main.kmb.gamestates.Block;
 import com.main.kmb.gamestates.PlayingState;
+import com.main.kmb.gamestates.Block.BlockType;
 
 public class NatureObject{
 
@@ -50,7 +51,7 @@ public class NatureObject{
 		if(!choosedLocation){
 			for(Block b : PlayingState.blocks){
 				if(getObjectRect().intersects(b)){
-					if(!b.isChoosed()){
+					if(!b.isChoosed() && b.getBlockType().equals(BlockType.GRASS)){
 						if(this.xpos < b.x){
 							xpos = b.x;
 						}
@@ -90,8 +91,8 @@ public class NatureObject{
 		}else{
 			g.drawImage(nature_object_image, (int) xpos - PlayingState.xOffset, (int) ypos - PlayingState.yOffset, width, height,null);
 		}
-		g.setColor(Color.RED);
-		g.drawRect((int) xpos - PlayingState.xOffset, (int) ypos - PlayingState.yOffset, 32, 32);
+		//g.setColor(Color.RED);
+		//g.drawRect((int) xpos - PlayingState.xOffset, (int) ypos - PlayingState.yOffset, 32, 32);
 		
 		if(this instanceof Tree){
 			//g.drawRect((int) xpos + width / 2 - 16 - PlayingState.xOffset, (int) ypos + height - 32 - PlayingState.yOffset, 32, 32);

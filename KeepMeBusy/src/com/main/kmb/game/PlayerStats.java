@@ -1,11 +1,36 @@
 package com.main.kmb.game;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.text.DecimalFormat;
+
+import com.main.kmb.Assets.assets;
+import com.main.kmb.Entity.Entity;
+import com.main.kmb.engine.GameLoop;
+import com.main.kmb.gamestates.PlayingState;
+import com.main.kmb.gfx.Particle;
+
 public class PlayerStats {
 
 	Economy eco = new Economy();
 	
 	private int kills = 0;
 	private int skillPoints = 0;
+	
+	private int damage = 15;
+	
+	//RANK
+	private int level = 1;
+	
+	
+	private double maxExp = 15;
+	private double currExp = 0;
+	
+	//ATTACk
+	private double timeUntillNextAttack = 100;
+	private double currAttackT = timeUntillNextAttack;
+	private double attackSpeed = 10;
 	
 	//MANA
 	private double maxMana = 200;
@@ -15,7 +40,7 @@ public class PlayerStats {
 	
 	//HEALTH
 	private double maxHealth = 150;
-	private double healthRegen = 1.2;
+	private double healthRegen = 0.05;
 	private double defaultHealth = maxHealth;
 	private double currHealth = maxHealth;
 	
@@ -28,24 +53,113 @@ public class PlayerStats {
 	//ATTACKSPEED
 	//ARMOR
 	
+	//TODO TODAY!!!
+	/*
+	 * Add Level for Player
+	 * Add EXP System From Killings
+	 * 
+	 */
+	
 	
 	public PlayerStats() {
 	
 	}
+	
+	public void fixRank(Graphics2D g) {
+		g.setColor(Color.WHITE);
+		g.setFont(new Font("Roland",32,65));
+		if(level < 10){
+			g.drawString(getLevel()+"", 45, 85);
+		}else{
+			g.drawString(getLevel()+"", 22, 85);
+		}
+		g.setFont(new Font("Roland",32,35));
+		
+		g.drawImage(assets.getExp_bar(), -8, 655, 64*19+64+10,32,null);
+	}
+	
+	public void tickExp(double deltaTime) {
+		if(currExp >= maxExp){
+			promoteToNextLevel();
+			currExp = 0;
+			maxExp += 200;
+			assets.playSound("level_up.wav");
+			GameLoop.parts.add(new Particle((int)570, (int)300 ,50, 1, "Level up!",Color.CYAN, true));
+		}
+	//	currExp+=200*deltaTime;
+	}
 
+	
+	public void AttackTimer(Entity e) {
+		if(currAttackT != 0){
+			currAttackT-=attackSpeed;
+		}
+		if(currAttackT <= 0)
+		{
+			e.attacking = false;
+			currAttackT = timeUntillNextAttack;
+		}
+	}
+	
 	public Economy getEconomy() {
 		return eco;
 	}
 
+	//RANK
+	public int getLevel() {
+		return level;
+	}
+	public void setLevel(int level) {
+		this.level = level;
+	}
+	public void promoteToNextLevel(){
+		this.level = level + 1;
+	}
 	
-	
-	
+	public double getCurrExp() {
+		return currExp;
+	}
+	public double getMaxExp() {
+		return maxExp;
+	}
+	public void setExp(double exp) {
+		this.currExp = exp;
+	}
+	public void addExp(double amount){
+		if(currExp < getMaxExp()){
+			currExp += amount;	
+		}else{
+			System.out.println("");
+		}
+	}
 	//KILL
 	public int getKills() {
 		return kills;
 	}
 	public void addKill(int i) {
 		kills+=i;
+	}
+	
+	//DAMAGE
+	public int getDamage() {
+		return damage;
+	}
+	public void setDamage(int damage) {
+		this.damage = damage;
+	}
+	
+	//ATTACK
+	public double getTimeUntillNextAttack() {
+		return timeUntillNextAttack;
+	}
+	public void setTimeUntillNextAttack(int timeUntillNextAttack) {
+		this.timeUntillNextAttack = timeUntillNextAttack;
+	}
+	public double getCurrAttackT() {
+		return currAttackT;
+	}
+	public void setCurrAttackT(int currAttackT) {
+		this.currAttackT = currAttackT;
 	}
 	
 	//SKILL P
@@ -160,5 +274,9 @@ public class PlayerStats {
 	public void setManaRegen(double manaRegen) {
 		this.manaRegen = manaRegen;
 	}
+
+
+
+
 	
 }

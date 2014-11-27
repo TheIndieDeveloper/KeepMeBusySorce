@@ -54,15 +54,16 @@ public class AI {
 	public void CreateAIGUI(Graphics2D g) {
 		
 		if(isAlive){
-			g.setColor(Color.RED);
-			g.fillRect((int)250 - (int)healthScale,(int) 80, (int) ((int) Maxhealth * healthScale) , 20);
-			GameLoop.parts.add(new Particle((int)250 - (int)healthScale,(int) 80, 5, (float) .5, Color.red, true));
-			GameLoop.parts.add(new Particle((int)250 - (int)healthScale,(int) 90, 5, (float) .5, Color.red, true));
-			GameLoop.parts.add(new Particle((int)250 - (int)healthScale,(int) 100, 5, (float) .5, Color.red, true));
-			
-			g.setColor(Color.WHITE);
-			
-			g.drawImage(assets.HealthGUI_AI, 10, 10, 16*15 ,16*10,null);
+			//assets.playSound("hit2.wav");
+//			g.setColor(Color.RED);
+//			g.fillRect((int)250 - (int)healthScale,(int) 80, (int) ((int) Maxhealth * healthScale) , 20);
+//			GameLoop.parts.add(new Particle((int)250 - (int)healthScale,(int) 80, 5, (float) .5, Color.red, true));
+//			GameLoop.parts.add(new Particle((int)250 - (int)healthScale,(int) 90, 5, (float) .5, Color.red, true));
+//			GameLoop.parts.add(new Particle((int)250 - (int)healthScale,(int) 100, 5, (float) .5, Color.red, true));
+//			
+//			g.setColor(Color.WHITE);
+//			
+//			g.drawImage(assets.HealthGUI_AI, 10, 10, 16*15 ,16*10,null);
 		}
 	}
 	
@@ -135,6 +136,8 @@ public class AI {
 						}	
 						PlayingState.ai_entitys.remove(this);
 						player.getStats().addKill(1);
+						player.getStats().getEconomy().addMoney(10);
+						player.getStats().addExp(1);
 					}
 					
 				}
@@ -249,6 +252,8 @@ public class AI {
 			}
 		}
 	}
+	
+	int AnimationState = 0;
 
 	private void FollowThePlayer(double deltaTime, Player player) {
 		double pXpos = player.getXpos();
@@ -272,9 +277,23 @@ public class AI {
 		if(cypos < pYpos ){
 			this.ypos += this.voly * this.speed * deltaTime;
 		}
-		if(cypos > pYpos ){
+		if(cypos > pYpos){
 			this.ypos += this.voly * this.speed * deltaTime;
 		}
+		
+//		if(cypos > pYpos && cxpos < pXpos){
+//			System.out.println("RIGHT, UP");
+//		}
+//		if(cypos > pYpos && cxpos > pXpos){
+//			System.out.println("LEFT, UP");
+//		}
+//		if(cypos < pYpos && cxpos > pXpos){
+//			System.out.println("LEFT, DOWN");
+//		}
+//		if(cypos < pYpos && cxpos < pXpos){
+//			System.out.println("RIGHT, DOWN");
+//		}
+		
 		
 		if(walk_to_choose || choose){
 			walk_to_choose = false;
@@ -298,9 +317,10 @@ public class AI {
 		g.setColor(Color.WHITE);
 //		g.drawString("CHOOSE: "+choose, 500, 200);
 //		g.drawString("WALKTO: "+walk_to_choose, 500, 250);
-		g.drawString("CHOOSE SIZE: "+choosedBlocks.size(), 500, 300);
+		//g.drawString("CHOOSE SIZE: "+choosedBlocks.size(), 500, 300);
 //		g.drawString("BLOCK: "+random, 500, 350);
 //		g.drawString("FP: "+followPlayer, 500, 400);
+		
 	}
 
 	public void init(){
